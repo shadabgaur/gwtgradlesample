@@ -1,0 +1,100 @@
+import de.richsource.gradle.plugins.gwt.GwtSuperDev
+
+apply plugin: 'war'
+apply plugin: 'java'
+apply plugin: 'gwt'
+apply plugin: 'eclipse'
+apply plugin: 'jetty'
+
+//Java version compatibility to use when compiling Java source.
+sourceCompatibility = 1.8
+//Java version to generate classes for.
+targetCompatibility = 1.8
+//Script Version
+version = '1.0'
+
+buildscript {
+	repositories {
+		jcenter() //repository where to fetch gwt gradle plugin
+	}
+	dependencies {
+		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+		
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+//compileJava{
+	//enable incremental compilation
+	//options.incremental = true
+//}
+
+gwt {
+	gwtVersion='2.7.0'
+	modules 'com.javacodegeeks.gradle.gwt.integration.build.GradleGWTIntegrationExampleJCG'
+	devModules 'com.javacodegeeks.gradle.gwt.integration.build.GradleGWTIntegrationExampleJCG'
+	    
+	sourceSets {
+		main {
+			java {
+				srcDir 'src'
+			}
+		}
+	}
+	
+	logLevel = 'ERROR'
+	
+	minHeapSize = "512M";
+	maxHeapSize = "1024M";
+	
+	superDev {
+		noPrecompile=true
+	}
+	
+	// The following is only needed if you don't use the Google Plugin for Eclipse.
+	eclipse{
+		addGwtContainer=false // Default set to true
+	}
+	
+	//Specify the deployment Port
+	jettyRunWar.httpPort = 8089
+}
+
+// This dependencies section belongs to the project, use this
+// to add in any dependencies that we are going to need for building
+// the application.
+dependencies {
+    providedCompile 'com.google.gwt:gwt-user:2.7.0'
+    providedCompile 'com.google.gwt:gwt-servlet:2.7.0'
+    providedCompile 'com.github.gwtmaterialdesign:gwt-material:1.3.3'
+}
+
+// Control what goes into the output archive. Also pack the resources
+// along with the HTML file and the compiled JS sources.
+war {
+    from sourceSets.main.resources
+    
+}
+
+// A task to run a generated war file. This task depends on the war
+// plugin to generate a war file that contains the build output that
+// is ready to be run on the server.
+task run(type: JettyRunWar) {
+    dependsOn war
+    webApp = war.archivePath
+    daemon = true
+}
+
+// This task starts the super dev mode of GWT where you can run your
+// application in a local server. The changes you make to your java
+// source will be detected and the app will be re-compiled automatically.
+task superDev(type: GwtSuperDev) {
+    dependsOn run
+
+    doFirst {
+        gwt.modules = gwt.devModules
+    }
+}

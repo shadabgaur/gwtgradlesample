@@ -1,0 +1,3 @@
+# Module gradlegwtintegrationexamplejcg
+# RPC service class, partial path of RPC policy file
+com.javacodegeeks.gradle.gwt.integration.build.client.GreetingService, 8030E5AE036C70ADFA2740670BC9F9E3.gwt.rpc

@@ -1,0 +1,2 @@
+serviceClass: com.javacodegeeks.gradle.gwt.integration.build.client.GreetingService
+path: 8030E5AE036C70ADFA2740670BC9F9E3.gwt.rpc
